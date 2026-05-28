@@ -1,0 +1,20 @@
+{
+  "name": "maintenance-ticket-management-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production-ready starter architecture for a Maintenance Ticket Management System.",
+  "scripts": {
+    "dev": "npm run dev:server",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "build:client": "npm --prefix client run build",
+    "prisma:generate": "npm --prefix server run prisma:generate",
+    "prisma:migrate": "npm --prefix server run prisma:migrate",
+    "db:seed": "npm --prefix server run db:seed",
+    "install:all": "npm install --prefix server && npm install --prefix client"
+  },
+  "workspaces": [
+    "server",
+    "client"
+  ]
+}

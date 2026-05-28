@@ -1,0 +1,212 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN           @map("admin")
+  DEPARTMENT_USER @map("department_user")
+  TECHNICIAN      @map("technician")
+}
+
+enum TicketStatus {
+  PENDING     @map("Pending")
+  ASSIGNED    @map("Assigned")
+  IN_PROGRESS @map("In Progress")
+  RESOLVED    @map("Resolved")
+  CLOSED      @map("Closed")
+}
+
+enum TicketPriority {
+  LOW    @map("Low")
+  MEDIUM @map("Medium")
+  HIGH   @map("High")
+  URGENT @map("Urgent")
+}
+
+enum AuditAction {
+  TICKET_CREATED        @map("ticket created")
+  TECHNICIAN_ASSIGNED   @map("technician assigned")
+  STATUS_CHANGED        @map("status changed")
+  TICKET_RESOLVED       @map("ticket resolved")
+  COMMENT_ADDED         @map("comment added")
+}
+
+model Department {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(120)
+  code      String?  @unique @db.VarChar(40)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  users   User[]
+  tickets Ticket[]
+
+  @@map("departments")
+}
+
+model Facility {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(120)
+  code      String?  @unique @db.VarChar(40)
+  address   String?  @db.VarChar(255)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  areas   Area[]
+  tickets Ticket[]
+
+  @@map("facilities")
+}
+
+model Area {
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(120)
+  facilityId Int      @map("facility_id")
+  isActive   Boolean  @default(true) @map("is_active")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  facility Facility @relation(fields: [facilityId], references: [id])
+  tickets  Ticket[]
+
+  @@unique([facilityId, name])
+  @@index([facilityId])
+  @@map("areas")
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(120)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tickets Ticket[]
+
+  @@map("categories")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String   @db.VarChar(120)
+  email        String   @unique @db.VarChar(180)
+  password     String   @db.VarChar(255)
+  role         UserRole @default(DEPARTMENT_USER)
+  departmentId Int?     @map("department_id")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  department      Department?      @relation(fields: [departmentId], references: [id])
+  technician      Technician?
+  createdTickets  Ticket[]         @relation("TicketCreatedBy")
+  assignedTickets Ticket[]         @relation("TicketAssignedTo")
+  comments        TicketComment[]
+  auditLogs       AuditLog[]
+  notifications   Notification[]
+
+  @@index([departmentId])
+  @@map("users")
+}
+
+model Technician {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique @map("user_id")
+  skill     String?  @db.VarChar(120)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("technicians")
+}
+
+model Ticket {
+  id           Int            @id @default(autoincrement())
+  title        String         @db.VarChar(180)
+  description  String         @db.Text
+  priority     TicketPriority @default(MEDIUM)
+  facilityId   Int            @map("facility_id")
+  areaId       Int            @map("area_id")
+  categoryId   Int            @map("category_id")
+  departmentId Int            @map("department_id")
+  createdById  Int            @map("created_by_id")
+  assignedToId Int?           @map("assigned_to")
+  imageUrl     String?        @map("image_url") @db.VarChar(255)
+  status       TicketStatus   @default(PENDING)
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  facility   Facility        @relation(fields: [facilityId], references: [id])
+  area       Area            @relation(fields: [areaId], references: [id])
+  category   Category        @relation(fields: [categoryId], references: [id])
+  department Department      @relation(fields: [departmentId], references: [id])
+  createdBy  User            @relation("TicketCreatedBy", fields: [createdById], references: [id])
+  assignedTo User?           @relation("TicketAssignedTo", fields: [assignedToId], references: [id])
+  comments   TicketComment[]
+  auditLogs  AuditLog[]
+
+  @@index([facilityId])
+  @@index([areaId])
+  @@index([categoryId])
+  @@index([departmentId])
+  @@index([createdById])
+  @@index([assignedToId])
+  @@index([status])
+  @@index([priority])
+  @@map("tickets")
+}
+
+model TicketComment {
+  id        Int      @id @default(autoincrement())
+  ticketId  Int      @map("ticket_id")
+  userId    Int      @map("user_id")
+  comment   String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+
+  ticket Ticket @relation(fields: [ticketId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@index([ticketId])
+  @@index([userId])
+  @@map("ticket_comments")
+}
+
+model AuditLog {
+  id        Int         @id @default(autoincrement())
+  ticketId  Int         @map("ticket_id")
+  userId    Int         @map("user_id")
+  action    AuditAction
+  oldValue  String?     @map("old_value") @db.VarChar(120)
+  newValue  String?     @map("new_value") @db.VarChar(120)
+  createdAt DateTime    @default(now()) @map("created_at")
+
+  ticket Ticket @relation(fields: [ticketId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@index([ticketId])
+  @@index([userId])
+  @@map("audit_logs")
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  title     String   @db.VarChar(160)
+  message   String   @db.VarChar(255)
+  isRead    Boolean  @default(false) @map("is_read")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("notifications")
+}

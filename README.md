@@ -1,263 +1,289 @@
 # Maintenance Ticket Management Web Application
 
-![React](https://img.shields.io/badge/Frontend-React-blue)
-![Node.js](https://img.shields.io/badge/Backend-Node.js-green)
-![Express](https://img.shields.io/badge/API-Express.js-lightgrey)
-![Prisma](https://img.shields.io/badge/ORM-Prisma-2D3748)
-![MySQL](https://img.shields.io/badge/Database-MySQL-orange)
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)
+![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express.js-REST%20API-000000?logo=express&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?logo=mysql&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-Authentication-000000?logo=jsonwebtokens&logoColor=white)
 
-A full-stack web application for managing maintenance complaints, assigning technicians, tracking ticket status, and maintaining service history inside an organization.
+A full-stack maintenance ticket management system built to help organizations raise, assign, track, and resolve facility maintenance issues in a structured way.
 
-This project is designed as a practical portfolio project. It demonstrates frontend development, backend REST API development, authentication, role-based access control, database modeling, file upload handling, validations, and clean project architecture.
+This project covers a real-world workflow: department users create maintenance tickets, admins assign technicians, technicians update progress, and the system maintains comments, status history, image uploads, and audit logs.
 
-## Developed By
+## Author
 
 **Pratik Shelar**
 
 - LinkedIn: <https://www.linkedin.com/in/pratik-shelar-6b66a8286/>
 - GitHub: <https://github.com/Pratik-Ghrcemp>
 
-## Table of Contents
+## Quick Navigation
 
-- [Project Overview](#project-overview)
-- [Project Screenshots](#project-screenshots)
-- [Key Features](#key-features)
+- [Project Highlights](#project-highlights)
+- [Screenshots](#screenshots)
 - [User Roles](#user-roles)
-- [Project Flow](#project-flow)
-- [Tools and Technologies](#tools-and-technologies)
-- [Architecture Overview](#architecture-overview)
-- [Project Structure](#project-structure)
-- [Database Modules](#database-modules)
-- [API Overview](#api-overview)
-- [Installation and Setup](#installation-and-setup)
-- [Demo Login Details](#demo-login-details)
-- [Run the Project](#run-the-project)
-- [Verification](#verification)
+- [Application Workflow](#application-workflow)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Folder Structure](#folder-structure)
+- [Database Design](#database-design)
+- [API Reference](#api-reference)
+- [Local Setup](#local-setup)
+- [Demo Accounts](#demo-accounts)
+- [Useful Commands](#useful-commands)
 - [Security Notes](#security-notes)
-- [Future Scope](#future-scope)
-- [Important Notes](#important-notes)
+- [Future Improvements](#future-improvements)
 
-## Project Overview
+## Project Highlights
 
-In many organizations, maintenance issues are handled manually through calls, messages, or paper records. This creates problems such as delayed assignments, unclear responsibility, missing status updates, and poor tracking.
+This application is designed for maintenance teams, facility teams, and internal support teams that need clear ticket ownership and status tracking.
 
-This application solves that problem by providing a centralized ticket management system where:
+| Area | What This Project Does |
+| --- | --- |
+| Authentication | Secure login, registration, JWT token handling, and protected routes |
+| Access Control | Separate permissions for Admin, Technician, and Department User |
+| Ticket Management | Create, view, filter, assign, comment, and update ticket status |
+| Admin Operations | Manage departments, facilities, areas, categories, and technician assignment |
+| Tracking | Ticket comments, status updates, audit logs, and notifications |
+| File Upload | Optional ticket image upload for better issue reporting |
+| Database | Relational MySQL schema managed through Prisma ORM |
+| UI | Responsive React interface with Bootstrap and reusable components |
 
-- Department users can raise maintenance tickets.
-- Admin users can assign technicians and manage operational data.
-- Technicians can work on assigned tickets and update progress.
-- Every ticket has status, priority, comments, image support, and audit history.
+## Screenshots
 
-## Project Screenshots
+The screenshots below are captured from the actual running application and stored in `docs/screenshots/`.
 
-The screenshots below are stored inside the `docs/screenshots/` folder and will display directly on GitHub.
+### Authentication and Dashboard
 
-| Login Page | Dashboard |
+| Sign In | Admin Dashboard |
 | --- | --- |
 | ![Login Page](docs/screenshots/login.png) | ![Dashboard](docs/screenshots/dashboard.png) |
+
+### Ticket Management
 
 | Ticket List | Ticket Details |
 | --- | --- |
 | ![Ticket List](docs/screenshots/tickets.png) | ![Ticket Details](docs/screenshots/ticket-details.png) |
 
-| Create Ticket | Master Data |
+### Create and Configure
+
+| Create Ticket | Master Data Management |
 | --- | --- |
 | ![Create Ticket](docs/screenshots/create-ticket.png) | ![Master Data](docs/screenshots/master-data.png) |
 
-Screenshot files used in this README:
-
-```text
-docs/screenshots/login.png
-docs/screenshots/dashboard.png
-docs/screenshots/tickets.png
-docs/screenshots/ticket-details.png
-docs/screenshots/create-ticket.png
-docs/screenshots/master-data.png
-```
-
-## Key Features
-
-- JWT-based authentication for secure login and user sessions.
-- Public registration for department users and technicians.
-- Role-based access control for Admin, Technician, and Department User.
-- Dashboard with ticket status summary.
-- Create tickets with title, description, department, facility, area, category, priority, and optional image.
-- Ticket listing with search, filters, and pagination.
-- Admin-only technician assignment.
-- Status update flow for admins and technicians.
-- Ticket comments for communication.
-- Audit logs for important ticket actions.
-- Master data management for departments, facilities, areas, and categories.
-- MySQL database integration using Prisma ORM.
-- Backend security features using Helmet, CORS, validation, and rate limiting.
-
 ## User Roles
 
-| Role | Main Access |
-| --- | --- |
-| Admin | Manage master data, view all tickets, assign technicians, update ticket status, monitor dashboard |
-| Department User | Create tickets, upload ticket image, view own tickets, add comments |
-| Technician | View assigned tickets, add comments, update ticket progress |
+| Role | Responsibility | Access Level |
+| --- | --- | --- |
+| Admin | Controls the maintenance workflow and master data | Full access |
+| Department User | Raises maintenance requests and tracks own tickets | Limited user access |
+| Technician | Works on assigned tickets and updates progress | Assigned-ticket access |
 
-## Project Flow
+### Role-Based Actions
 
-1. User logs in or registers as a department user or technician.
-2. Department user creates a maintenance ticket.
-3. Admin reviews tickets from dashboard or ticket list.
-4. Admin assigns a technician to the ticket.
-5. Technician starts work and updates ticket status.
-6. Users can add comments for updates and communication.
-7. The system records important actions in audit logs.
-8. Ticket is resolved and closed after the maintenance work is completed.
+| Action | Admin | Department User | Technician |
+| --- | --- | --- | --- |
+| Register publicly | No | Yes | Yes |
+| Create ticket | Yes | Yes | No |
+| View all tickets | Yes | No | No |
+| View own/assigned tickets | Yes | Yes | Yes |
+| Assign technician | Yes | No | No |
+| Update ticket status | Yes | No | Yes |
+| Add comments | Yes | Yes | Yes |
+| Manage master data | Yes | No | No |
 
-## Tools and Technologies
+## Application Workflow
 
-### Frontend
-
-- React 18
-- Vite
-- React Router
-- Bootstrap 5
-- React Bootstrap
-- Axios
-- Lucide React Icons
-
-### Backend
-
-- Node.js
-- Express.js
-- Prisma ORM
-- MySQL
-- JWT Authentication
-- bcryptjs
-- Multer
-- Helmet
-- CORS
-- Express Validator
-- Express Rate Limit
-
-### Development Tools
-
-- npm
-- Nodemon
-- Prisma Studio
-- GitHub
-
-## Architecture Overview
-
-```text
-React Frontend
-      |
-      | Axios HTTP Requests
-      v
-Express.js REST API
-      |
-      | Prisma ORM
-      v
-MySQL Database
+```mermaid
+flowchart LR
+    A[Department User] --> B[Create Maintenance Ticket]
+    B --> C[Ticket Stored in MySQL]
+    C --> D[Admin Reviews Ticket]
+    D --> E[Assign Technician]
+    E --> F[Technician Updates Status]
+    F --> G[Comments and Audit Logs]
+    G --> H[Ticket Resolved or Closed]
 ```
 
-The project follows a layered architecture:
+The flow is simple and practical:
 
-- Frontend handles UI, routing, forms, API calls, auth context, and user interactions.
-- Backend handles API routes, controllers, services, middleware, validations, and error handling.
-- Prisma handles database models, migrations, and database queries.
-- MySQL stores users, tickets, comments, audit logs, and master data.
+1. A department user reports a maintenance issue.
+2. The ticket is created with priority, location, category, description, and optional image.
+3. The admin reviews the ticket and assigns a technician.
+4. The technician updates the progress from Assigned to In Progress or Resolved.
+5. Comments and audit logs keep the communication and history clear.
+6. The ticket can be closed after the issue is completed.
 
-## Project Structure
+## Tech Stack
+
+| Layer | Technologies |
+| --- | --- |
+| Frontend | React 18, Vite, React Router, Bootstrap 5, React Bootstrap, Axios, Lucide React |
+| Backend | Node.js, Express.js, REST API architecture |
+| Database | MySQL |
+| ORM | Prisma ORM |
+| Authentication | JWT, bcryptjs |
+| Uploads | Multer |
+| Security | Helmet, CORS, Express Rate Limit, Express Validator |
+| Development | npm, Nodemon, Prisma Studio |
+
+## Architecture
+
+```mermaid
+flowchart TB
+    Browser[React Frontend]
+    API[Express REST API]
+    Auth[JWT Auth Middleware]
+    Services[Service Layer]
+    Prisma[Prisma ORM]
+    DB[(MySQL Database)]
+    Uploads[Local Upload Storage]
+
+    Browser -->|Axios Requests| API
+    API --> Auth
+    API --> Services
+    Services --> Prisma
+    Prisma --> DB
+    API --> Uploads
+```
+
+### Backend Layering
+
+| Layer | Purpose |
+| --- | --- |
+| Routes | Defines API endpoints and attaches middleware |
+| Controllers | Handles request and response flow |
+| Services | Contains main business logic |
+| Validations | Validates request body, params, and query values |
+| Middleware | Handles auth, errors, logs, uploads, and not-found responses |
+| Prisma | Handles database queries and model relationships |
+
+### Frontend Layering
+
+| Layer | Purpose |
+| --- | --- |
+| Pages | Main screens such as Dashboard, Tickets, Login, Register |
+| Components | Reusable UI blocks such as tables, filters, badges, modals |
+| Context | Authentication and toast notification state |
+| Services | API calls for auth, tickets, health, and master data |
+| Routes | Protected route handling and page navigation |
+| Styles | Global UI styling |
+
+## Folder Structure
+
+The project is split into a React client and an Express server.
 
 ```text
-.
-|-- client/
+maintenance-ticket-management-web-application/
+|
+|-- client/                         React frontend
 |   |-- src/
-|   |   |-- api/
-|   |   |-- components/
-|   |   |-- context/
-|   |   |-- hooks/
-|   |   |-- layouts/
-|   |   |-- pages/
-|   |   |-- routes/
-|   |   |-- services/
-|   |   |-- styles/
-|   |   `-- utils/
+|   |   |-- api/                     Axios instance and response helpers
+|   |   |-- components/              Reusable UI components
+|   |   |-- context/                 Auth and toast providers
+|   |   |-- hooks/                   Custom React hooks
+|   |   |-- layouts/                 Main app layout
+|   |   |-- pages/                   Application pages
+|   |   |-- routes/                  App routing and protected routes
+|   |   |-- services/                Frontend API service functions
+|   |   |-- styles/                  Global styles
+|   |   `-- utils/                   Shared frontend constants
 |   |-- .env.example
-|   |-- package.json
-|   `-- vite.config.js
-|-- server/
-|   |-- config/
-|   |-- controllers/
-|   |-- database/
-|   |-- middleware/
-|   |-- prisma/
-|   |-- routes/
-|   |-- services/
-|   |-- uploads/
-|   |-- utils/
-|   |-- validations/
+|   `-- package.json
+|
+|-- server/                         Express backend
+|   |-- config/                     Environment and CORS config
+|   |-- controllers/                API request handlers
+|   |-- database/                   Prisma client setup
+|   |-- middleware/                 Auth, error, upload, logger middleware
+|   |-- prisma/                     Prisma schema, migrations, seed data
+|   |-- routes/                     API route definitions
+|   |-- services/                   Business logic
+|   |-- uploads/                    Uploaded ticket images
+|   |-- utils/                      Helpers and constants
+|   |-- validations/                Express-validator rules
 |   |-- .env.example
 |   |-- app.js
 |   `-- server.js
+|
 |-- docs/
-|   `-- screenshots/
-|-- package.json
+|   `-- screenshots/               README screenshots
+|
+|-- package.json                    Root scripts
+|-- package-lock.json
+|-- .gitignore
 `-- README.md
 ```
 
-## Database Modules
+## Database Design
 
-- Users
-- Departments
-- Facilities
-- Areas
-- Categories
-- Technicians
-- Tickets
-- Ticket Comments
-- Audit Logs
-- Notifications
+The database is designed around users, tickets, master data, comments, and tracking history.
 
-## API Overview
+| Module | Purpose |
+| --- | --- |
+| Users | Stores admin, department user, and technician accounts |
+| Departments | Groups users and tickets by department |
+| Facilities | Represents buildings or locations |
+| Areas | Represents facility-specific areas |
+| Categories | Defines issue types such as electrical, plumbing, cleaning |
+| Technicians | Stores technician-specific records |
+| Tickets | Main maintenance request records |
+| Ticket Comments | Stores discussion and updates on tickets |
+| Audit Logs | Tracks important ticket actions |
+| Notifications | Stores user notifications |
 
-### Authentication
+## API Reference
 
-```text
-POST /api/v1/auth/register
-POST /api/v1/auth/login
-POST /api/v1/auth/logout
-GET  /api/v1/auth/me
-GET  /api/v1/auth/departments
-```
-
-### Tickets
+Base URL:
 
 ```text
-GET   /api/v1/tickets
-POST  /api/v1/tickets
-GET   /api/v1/tickets/:id
-PATCH /api/v1/tickets/:id/assign
-PATCH /api/v1/tickets/:id/status
-POST  /api/v1/tickets/:id/comments
-GET   /api/v1/tickets/stats
-GET   /api/v1/tickets/technicians
+http://localhost:5000/api/v1
 ```
 
-### Master Data
+### Authentication APIs
+
+| Method | Endpoint | Description | Access |
+| --- | --- | --- | --- |
+| POST | `/auth/register` | Register department user or technician | Public |
+| POST | `/auth/login` | Login and receive JWT token | Public |
+| POST | `/auth/logout` | Logout current user | Authenticated |
+| GET | `/auth/me` | Get current logged-in user | Authenticated |
+| GET | `/auth/departments` | Get active departments for registration | Public |
+
+### Ticket APIs
+
+| Method | Endpoint | Description | Access |
+| --- | --- | --- | --- |
+| GET | `/tickets` | List tickets with filters and pagination | Authenticated |
+| POST | `/tickets` | Create a new ticket | Admin, Department User |
+| GET | `/tickets/:id` | Get ticket details | Authorized ticket user |
+| PATCH | `/tickets/:id/assign` | Assign technician to ticket | Admin |
+| PATCH | `/tickets/:id/status` | Update ticket status | Admin, Technician |
+| POST | `/tickets/:id/comments` | Add ticket comment | Authorized ticket user |
+| GET | `/tickets/stats` | Get dashboard ticket counts | Authenticated |
+| GET | `/tickets/technicians` | Get active technicians | Authenticated |
+
+### Master Data APIs
+
+| Method | Endpoint | Description | Access |
+| --- | --- | --- | --- |
+| GET | `/master-data/:resource` | List master data records | Authenticated |
+| GET | `/master-data/:resource/:id` | Get one master data record | Authenticated |
+| POST | `/master-data/:resource` | Create master data record | Admin |
+| PUT | `/master-data/:resource/:id` | Update master data record | Admin |
+| DELETE | `/master-data/:resource/:id` | Delete master data record | Admin |
+
+Supported master data resources:
 
 ```text
-GET    /api/v1/master-data/:resource
-GET    /api/v1/master-data/:resource/:id
-POST   /api/v1/master-data/:resource
-PUT    /api/v1/master-data/:resource/:id
-DELETE /api/v1/master-data/:resource/:id
+departments
+facilities
+areas
+categories
 ```
 
-Valid master data resources:
-
-```text
-departments, facilities, areas, categories
-```
-
-## Installation and Setup
+## Local Setup
 
 ### 1. Clone the Repository
 
@@ -297,7 +323,7 @@ Client `.env` example:
 VITE_API_BASE_URL=http://localhost:5000/api/v1
 ```
 
-If your database password contains special URL characters such as `@`, encode them in `DATABASE_URL`. For example, `@` becomes `%40`.
+If your database password contains special URL characters such as `@`, encode them in the database URL. For example, `@` becomes `%40`.
 
 ### 4. Create MySQL Database
 
@@ -305,7 +331,7 @@ If your database password contains special URL characters such as `@`, encode th
 CREATE DATABASE maintenance_ticket_db;
 ```
 
-### 5. Generate Prisma Client, Run Migration, and Seed Data
+### 5. Prepare Prisma and Demo Data
 
 ```bash
 npm run prisma:generate
@@ -315,49 +341,49 @@ npm run db:seed
 
 The seed command creates sample departments, facilities, areas, categories, users, tickets, comments, audit logs, and notifications.
 
-## Demo Login Details
+### 6. Run the Application
 
-Use these accounts after running the seed command:
-
-```text
-Admin: admin@example.com / Password123
-Technician: technician@example.com / Password123
-Department User: user@example.com / Password123
-```
-
-Public registration is limited to department users and technicians. Admin accounts should be created only through trusted setup or database/admin workflow.
-
-## Run the Project
-
-Start the backend server:
+Start backend:
 
 ```bash
 npm run dev:server
 ```
 
-Start the frontend app in another terminal:
+Start frontend in another terminal:
 
 ```bash
 npm run dev:client
 ```
 
-Open in browser:
+Open:
 
 ```text
 Frontend: http://localhost:5173
 Backend Health API: http://localhost:5000/api/v1/health
 ```
 
-## Useful Scripts
+## Demo Accounts
+
+Use these accounts after running the seed command:
+
+| Role | Email | Password |
+| --- | --- | --- |
+| Admin | `admin@example.com` | `Password123` |
+| Technician | `technician@example.com` | `Password123` |
+| Department User | `user@example.com` | `Password123` |
+
+Public registration is limited to department users and technicians. Admin accounts should be created only through a trusted setup or admin/database workflow.
+
+## Useful Commands
 
 | Command | Description |
 | --- | --- |
 | `npm run install:all` | Install server and client dependencies |
-| `npm run dev:server` | Start backend in development mode |
-| `npm run dev:client` | Start frontend in development mode |
+| `npm run dev:server` | Start backend server |
+| `npm run dev:client` | Start frontend app |
 | `npm run build:client` | Build frontend for production |
 | `npm run prisma:generate` | Generate Prisma client |
-| `npm run prisma:migrate` | Run Prisma migration |
+| `npm run prisma:migrate` | Run database migration |
 | `npm run db:seed` | Insert demo data |
 
 ## Verification
@@ -372,30 +398,52 @@ npm exec prisma validate
 
 ## Security Notes
 
-- Passwords are hashed using bcryptjs.
-- JWT is used for protected API routes.
-- Admin registration is not public.
-- Backend request validation is handled using express-validator.
-- Helmet is used for security-related HTTP headers.
-- Rate limiting is enabled to reduce repeated request abuse.
-- `.env` files should not be committed to GitHub.
+- Passwords are hashed with bcryptjs.
+- JWT protects private API routes.
+- Public registration does not allow admin account creation.
+- Request validation is handled with express-validator.
+- Helmet adds security-related HTTP headers.
+- Rate limiting helps reduce repeated request abuse.
+- `.env` files are ignored and should not be uploaded to GitHub.
 
-## Future Scope
+## Future Improvements
 
-- Email notifications for ticket assignment and status updates.
-- Technician workload dashboard.
+- Email notifications for ticket assignment and ticket updates.
+- Technician workload and performance dashboard.
 - Export ticket reports as PDF or Excel.
-- Advanced analytics for maintenance performance.
 - Password reset flow.
-- Deployment on cloud hosting.
+- Cloud deployment with production environment configuration.
+- Advanced analytics for repeated maintenance issues.
 
-## Important Notes
+## GitHub Upload Notes
 
-- Make sure MySQL is running before starting the backend.
-- Make sure `DATABASE_URL` has the correct username, password, host, port, and database name.
-- Use a strong `JWT_SECRET` value in production.
-- If Prisma generate fails on Windows because a Node process is using Prisma, stop the running server and try again.
+Upload these important project files and folders:
+
+```text
+client/
+server/
+docs/screenshots/
+README.md
+package.json
+package-lock.json
+.gitignore
+server/.env.example
+client/.env.example
+```
+
+Do not upload:
+
+```text
+node_modules/
+client/node_modules/
+server/node_modules/
+client/dist/
+server/.env
+client/.env
+server/uploads/
+*.log
+```
 
 ## Project Summary
 
-This Maintenance Ticket Management Web Application provides a complete workflow for raising, assigning, tracking, and resolving maintenance tickets. It is built with React, Node.js, Express, Prisma, and MySQL, and it demonstrates strong full-stack development fundamentals with authentication, role-based access, REST APIs, database design, image upload support, and clean code organization.
+This Maintenance Ticket Management Web Application provides a complete workflow for creating, assigning, tracking, and resolving maintenance tickets. It demonstrates full-stack development skills using React, Node.js, Express, Prisma, and MySQL, with practical features such as authentication, role-based permissions, REST APIs, database relationships, image uploads, validations, and a clean modular code structure.

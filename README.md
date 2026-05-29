@@ -6,6 +6,7 @@
 ![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?logo=mysql&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-Authentication-000000?logo=jsonwebtokens&logoColor=white)
+**Live Demo:** [https://pratik-ghrcemp.github.io/maintenance-ticket-management-web-application/](https://pratik-ghrcemp.github.io/maintenance-ticket-management-web-application/)
 
 A full-stack maintenance ticket management system built to help organizations raise, assign, track, and resolve facility maintenance issues in a structured way.
 
